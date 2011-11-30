@@ -43,7 +43,13 @@ class EmailAddressManager(models.Manager):
 
 
 class EmailAddress(models.Model):
-    
+    EMAIL_TYPE_CHOICES = (
+        ('P', 'Personal'),
+        ('C', 'Company'),
+        ('O', 'Others'),
+    )
+
+    email_type = models.CharField(max_length=1, choices=EMAIL_TYPE_CHOICES)
     user = models.ForeignKey(User)
     email = models.EmailField()
     verified = models.BooleanField(default=False)
