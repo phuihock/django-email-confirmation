@@ -56,8 +56,16 @@ class EmailAddress(models.Model):
     primary = models.BooleanField(default=False)
     
     objects = EmailAddressManager()
+
+    def save(self, **kwargs):
+        is_primary = EmailAddress.objects.get(id=self.id).primary
+        if self.primary and not is_primary:
+            self.set_as_primary(is_saving=True)
+
+        super(EmailAddress, self).save(**kwargs)
+
     
-    def set_as_primary(self, conditional=False):
+    def set_as_primary(self, conditional=False, is_saving=False):
         old_primary = EmailAddress.objects.get_primary(self.user)
         if old_primary:
             if conditional:
@@ -65,7 +73,10 @@ class EmailAddress(models.Model):
             old_primary.primary = False
             old_primary.save()
         self.primary = True
-        self.save()
+
+        if not is_saving:
+            self.save()
+
         self.user.email = self.email
         self.user.save()
         return True
