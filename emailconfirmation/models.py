@@ -58,9 +58,12 @@ class EmailAddress(models.Model):
     objects = EmailAddressManager()
 
     def save(self, **kwargs):
-        is_primary = EmailAddress.objects.get(id=self.id).primary
-        if self.primary and not is_primary:
-            self.set_as_primary(is_saving=True)
+        try:
+            is_primary = EmailAddress.objects.get(id=self.id).primary
+            if self.primary and not is_primary:
+                self.set_as_primary(is_saving=True)
+        except EmailAddress.DoesNotExist:
+            pass
 
         super(EmailAddress, self).save(**kwargs)
 
