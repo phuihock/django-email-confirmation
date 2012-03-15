@@ -91,7 +91,7 @@ class EmailAddress(models.Model):
         verbose_name = _("email address")
         verbose_name_plural = _("email addresses")
         unique_together = (
-            ("user", "email"),
+            ("user", "email", "email_type"),
         )
 
 
